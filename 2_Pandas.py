@@ -45,3 +45,6 @@ mylog("DELETE ROWS")
 rowfilter_for_delete = df[df["sepal.length"] < 4.5] # Reihen löschen
 print(rowfilter_for_delete)
 
+print("\nStatistische Beschreibung:")
+print(df.describe(include='all'))
+
