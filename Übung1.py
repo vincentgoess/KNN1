@@ -1,3 +1,4 @@
+from sklearn.cluster import KMeans
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -74,3 +75,28 @@ plt.xlabel("Alkoholgehalt")
 plt.ylabel("Qualität")
 plt.title("Alkohol vs. Qualität")
 plt.show()
+
+# 13. KMeans-Clustering
+# Entfernen der Spalten 'quality' und 'quality_label', da diese nicht für das Clustering verwendet werden
+df_clustering = df.drop(columns=['Qualität', 'quality_label'])
+
+# KMeans mit 3 Clustern anwenden
+kmeans = KMeans(n_clusters=3, random_state=42)
+df['cluster'] = kmeans.fit_predict(df_clustering)
+
+# Visualisierung der Cluster
+print("\nCluster Visualisierung: Alkohol vs. Dichte (mit Cluster-Zugehörigkeit)")
+sns.scatterplot(x=df['Alkohol'], y=df['Dichte'], hue=df['cluster'], palette='viridis')
+plt.xlabel("Alkoholgehalt")
+plt.ylabel("Dichte")
+plt.title("KMeans Clustering: Alkohol vs. Dichte")
+plt.show()
+
+# Cluster-Zugehörigkeit anzeigen
+print("\nCluster-Zugehörigkeit für die ersten 10 Zeilen:")
+print(df[['Alkohol', 'Dichte', 'cluster']].head(10))
+
+'''	•	Der Scatterplot zeigt die Verteilung der Weindaten in Bezug auf Alkoholgehalt und Dichte.
+	•	Das KMeans-Clustering unterteilt diese Weine basierend auf diesen Merkmalen in 3 Cluster, die 
+	durch Farben im Scatterplot hervorgehoben werden. Dadurch wird ersichtlich, wie sich die Weine in 
+	diese Cluster gruppieren, z. B. in Cluster mit hohem oder niedrigem Alkoholgehalt und Dichte.'''
