@@ -32,25 +32,23 @@ data = data.drop([col_name], axis = 1)
 
 """KNN aufbauen"""
 
-# Aus den zwei Tabellen vier Tabellen erzeugen
+# Aus den zwei Tabellen vier Tabellen erzeugen (20% Test/ 80% Training)
 train_data, test_data, train_col, test_col = train_test_split(data,col, test_size=0.2, random_state=42)
 
 # Aufbau KNN
 model = tf.keras.Sequential()
-model.add(tf.keras.Input(shape=(4,)))
-model.add(tf.keras.layers.Dense(75, activation=tf.nn.relu))
-model.add(tf.keras.layers.Dense(150, activation=tf.nn.relu))
-model.add(tf.keras.layers.Dense(3, activation=tf.nn.softmax))
+model.add(tf.keras.Input(shape=(4,))) # 4 steht für die Anzahl der Spalten ohne Klasse-Spalte
+model.add(tf.keras.layers.Dense(32, activation=tf.nn.sigmoid)) 
+model.add(tf.keras.layers.Dense(64, activation=tf.nn.sigmoid)) # (Alternativ relu probieren)
+model.add(tf.keras.layers.Dense(3, activation=tf.nn.softmax)) # 3 für 3 Output, weil 3 Klassen ausgegeben werden können
 
 # Konfiguration des Lernprozesses
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 """Trainieren"""
-
 # 30 Durchläufe
 model.fit(train_data, train_col, epochs=30)
 
 """Testen"""
-
 test_loss, test_acc = model.evaluate(test_data, test_col)
 print('Test accuracy:', test_acc)
