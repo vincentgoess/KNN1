@@ -44,6 +44,7 @@ model.add(tf.keras.layers.Dense(64, activation=tf.nn.sigmoid))
 model.add(tf.keras.layers.Dense(3, activation=tf.nn.softmax))
 # Konfiguration des Lernprozesses
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+# categorical_crossentropy = Zielwerte als One-Hot-Vektoren (z.B.: [1,0,0]; [0,1,0],...)
 
 """Trainieren"""
 
