@@ -44,6 +44,7 @@ model.add(tf.keras.layers.Dense(3, activation=tf.nn.softmax)) # 3 für 3 Output,
 
 # Konfiguration des Lernprozesses
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+# sparse_categorical_crossentropy = Zielwerte sind Ganzzahlen
 
 """Trainieren"""
 # 30 Durchläufe
