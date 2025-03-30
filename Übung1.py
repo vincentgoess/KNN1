@@ -76,12 +76,24 @@ plt.ylabel("Qualität")
 plt.title("Alkohol vs. Qualität")
 plt.show()
 
-# 13. KMeans-Clustering
+from yellowbrick.cluster import KElbowVisualizer
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 # Entfernen der Spalten 'quality' und 'quality_label', da diese nicht für das Clustering verwendet werden
 df_clustering = df.drop(columns=['Qualität', 'quality_label'])
 
-# KMeans mit 3 Clustern anwenden
-kmeans = KMeans(n_clusters=3, random_state=42)
+# Erstelle das KMeans-Modell
+kmeans = KMeans(random_state=42)
+
+# Visualisiere den Elbow-Plot, um die ideale Clusteranzahl zu bestimmen
+visualizer = KElbowVisualizer(kmeans, k=(1, 10))  # Teste Clusteranzahlen von 1 bis 10
+visualizer.fit(df_clustering)  # Passe das Modell an
+visualizer.show()  # Zeige den Elbow-Plot
+
+# Nachdem du den besten Wert für n_clusters ermittelt hast (z.B. 3), wende KMeans mit dieser Anzahl an
+kmeans = KMeans(n_clusters=3, random_state=42)  # Wähle 3 Cluster basierend auf dem Elbow-Plot
 df['cluster'] = kmeans.fit_predict(df_clustering)
 
 # Visualisierung der Cluster
