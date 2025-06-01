@@ -1,0 +1,43 @@
+import pandas as pd
+
+# 1. Daten einlesen
+file_path = "/Users/student-sbs/PycharmProjects/KNN1/adult-2.csv"  # Datei muss im aktuellen Verzeichnis sein
+df = pd.read_csv(file_path, delimiter=';')
+
+# 2. Erste und letzte Zeilen des Dataframe
+print(f"Erste Zeilen: \n{df.head()} \nLetzte Zeilen: \n {df.tail()}")
+
+# 3. Zusammenfassung (Datentypen, Anzahl der Nicht-Null-Einträge,...)
+print(df.info())
+
+
+# 4. Bedingte Auswahl: nur Zeilen behalten, bei denen workclass nicht '?'
+df = df[df['workclass'] != '?']
+
+# 5. Nicht-numerische Werte in numerische umwandeln (Label-Encoding)
+for column in df.select_dtypes(include=['object']).columns:
+    df[column] = df[column].astype('category').cat.codes
+print("\nDaten nach der Umwandlung in numerische Werte:")
+print(df.head())
+
+# 6. Korrelationen berechnen und Spalten mit geringster Korrelation anzeigen
+correlations = df.corr().abs()
+mean_corr = correlations.mean().sort_values()
+print("\n /6 Spalten mit den geringsten durchschnittlichen Korrelationen:")
+print(mean_corr.head())
+
+# 7. Spalte mit der geringsten durchschnittlichen Korrelation entfernen
+min_corr_col = mean_corr.idxmin()
+print(f"\n/7 Spalte mit der geringsten durchschnittlichen Korrelation: {min_corr_col}")
+df.drop(columns=min_corr_col, inplace=True)
+print(f"Spalte '{min_corr_col}' wurde entfernt.")
+
+# 8. Spalten mit höchster durchschnittlicher Korrelation
+mean_corr = correlations.mean().sort_values(ascending=False)
+print("\n/8 Spalten mit der höchsten durchschnittlichen Korrelation:")
+print(mean_corr.head())
+
+# 9. Spalte mit höchster mittlerer Korrelation entfernen
+max_corr_col = mean_corr.idxmax()
+df.drop(columns=max_corr_col, inplace=True)
+print(f"\n/9 Spalte mit der höchsten Korrelation '{max_corr_col}' wurde entfernt.")
