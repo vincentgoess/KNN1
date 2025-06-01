@@ -85,3 +85,23 @@ if "Ziel" in df.columns:
 
     print("\n/10 Vorhersage für nicht-numerische Zielspalte (encodiert):")
     print("Genauigkeit:", accuracy_score(y_test, y_pred))
+
+
+
+
+
+
+# Daten löschen
+    # Zeilen mit bestimmtem Wert entfernen (z. B. "?")
+    df = df[df["Spalte1"] != "?"]  # behält nur Zeilen, wo Spalte1 nicht "?" ist
+
+    # Zeilen mit fehlenden Werten löschen (NaN)
+    df = df.dropna()  # alle Zeilen mit NaN in beliebiger Spalte
+    # Nur wenn NaN in bestimmter Spalte:
+    df = df.dropna(subset=["Spalte1"])
+
+    # Ganze Spalte löschen
+    df = df.drop(columns=["Spalte1"])
+
+    # Einzelne Zeile per Index löschen
+    df = df.drop(index=3)  # löscht Zeile mit Index 3
