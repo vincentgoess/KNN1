@@ -4,8 +4,9 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
-# 1. Excel-Datei einlesen (benötigt: openpyxl!)
+# 1. CSV-Datei einlesen
 df = pd.read_csv("beispiel.csv", delimiter=",")
+
 # 2. Erste und letzte Spalten anzeigen
 print("Erste Spalte:")
 print(df.iloc[:, 0].head())
@@ -38,44 +39,32 @@ if "A" in df.columns and "B" in df.columns:
 
 # 8. Balkendiagramm: z. B. Häufigkeit von Kategorien
 if "Kategorie" in df.columns:
-    df["Kategorie"].value_counts().plot(kind="barh", title="Häufigkeit nach Kategorie") #kind="bar" für Säulendiagramm
+    df["Kategorie"].value_counts().plot(kind="barh", title="Häufigkeit nach Kategorie")  # kind="bar" für Säulen
     plt.tight_layout()
     plt.show()
 
-# 9. Entscheidungsbaum: Vorhersage einer Zielspalte "Ziel"
-if "Ziel" in df.columns:
+# 9. Vorhersage einer Zielspalte (wenn Ziel numerisch)
+if "Ziel" in df.columns and df["Ziel"].dtype != "object":
     X = df.drop(columns=["Ziel"])
     y = df["Ziel"]
-
-    # Nur numerische Spalten verwenden
     X = X.select_dtypes(include=["int64", "float64"])
 
-    # Aufteilen in Trainings- und Testdaten
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
     clf = DecisionTreeClassifier()
     clf.fit(X_train, y_train)
     y_pred = clf.predict(X_test)
 
-    print("\nEntscheidungsbaum-Vorhersage – Genauigkeit:")
+    print("\n/9 Entscheidungsbaum-Vorhersage – Genauigkeit:")
     print(accuracy_score(y_test, y_pred))
 
-# 10. Vorhersage für nicht-numerische Zielspalte mit Label-Encoding
-if "Ziel" in df.columns:
-    # Falls Zielspalte Text enthält → in Zahlen umwandeln
-    if df["Ziel"].dtype == "object":
-        df["Ziel"] = df["Ziel"].astype("category").cat.codes
+# 10. Vorhersage für nicht-numerische Zielspalte (Label-Encoding)
+if "Ziel" in df.columns and df["Ziel"].dtype == "object":
+    df["Ziel"] = df["Ziel"].astype("category").cat.codes
 
     X = df.drop(columns=["Ziel"])
     y = df["Ziel"]
-
-    # Nur numerische Eingaben verwenden
     X = X.select_dtypes(include=["int64", "float64"])
-
-    # Trainings-/Testdaten
-    from sklearn.model_selection import train_test_split
-    from sklearn.tree import DecisionTreeClassifier
-    from sklearn.metrics import accuracy_score
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
@@ -86,22 +75,18 @@ if "Ziel" in df.columns:
     print("\n/10 Vorhersage für nicht-numerische Zielspalte (encodiert):")
     print("Genauigkeit:", accuracy_score(y_test, y_pred))
 
-
-
-
-
-
-# Daten löschen
+# 🔻 Daten löschen (optional):
+# Beispielhafte Spalte 'Spalte1' – muss im CSV vorhanden sein
+if "Spalte1" in df.columns:
     # Zeilen mit bestimmtem Wert entfernen (z. B. "?")
-    df = df[df["Spalte1"] != "?"]  # behält nur Zeilen, wo Spalte1 nicht "?" ist
+    df = df[df["Spalte1"] != "?"]
 
-    # Zeilen mit fehlenden Werten löschen (NaN)
-    df = df.dropna()  # alle Zeilen mit NaN in beliebiger Spalte
-    # Nur wenn NaN in bestimmter Spalte:
-    df = df.dropna(subset=["Spalte1"])
+    # Zeilen mit NaN (Not a Number) löschen
+    df = df.dropna()  # oder gezielt mit: df.dropna(subset=["Spalte1"])
 
     # Ganze Spalte löschen
     df = df.drop(columns=["Spalte1"])
 
-    # Einzelne Zeile per Index löschen
-    df = df.drop(index=3)  # löscht Zeile mit Index 3
+    # Zeile nach Index löschen (z. B. 3)
+    if 3 in df.index:
+        df = df.drop(index=3)
